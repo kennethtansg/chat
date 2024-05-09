@@ -57,7 +57,7 @@ st.title("Agent K - AI Assistant")
 #)
 
 client = Groq(
-    api_key=os.environ.get("GROQ_API_KEY"),
+    api_key="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",
 )
 
 API_DOCS_URL = "https://docs.streamlit.io/library/api-reference"
