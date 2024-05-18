@@ -320,8 +320,10 @@ def main():
     #full_phone_number = f"{country_code}{phone_number}"
     whatsapp_url = f"https://wa.me/+6583385564?text={encoded_message}"
 
-    if st.sidebar.button("🟢 WhatsApp to Human Agent K"):
-        webbrowser.open(whatsapp_url)
+    st.sidebar.link_button("🟢 WhatsApp to Human Agent K", url=whatsapp_url)
+
+    #if st.sidebar.button("🟢 WhatsApp to Human Agent K"):
+    #    webbrowser.open(whatsapp_url)
 
     # Toggle checkbox in the sidebar for basic interactions
     show_basic_info = st.sidebar.toggle("Instructions", value=False)
@@ -355,7 +357,7 @@ def main():
     
     # Handle Chat and Update Modes
     if mode == "Chat with Agent K":
-        chat_input = st.chat_input("E.g. How can AI improve customer engagement?")
+        chat_input = st.chat_input("E.g. How can AI improve my sales?")
         if chat_input:
             latest_updates = load_streamlit_updates()
             on_chat_submit(chat_input, api_key, latest_updates)
