@@ -137,9 +137,9 @@ def on_chat_submit(chat_input, api_key, latest_updates):
 
     # Initialize the OpenAI API
     #model_engine = "gpt-3.5-turbo-1106"
-    model_engine = "gpt-3.5-turbo-0125"
+    #model_engine = "gpt-3.5-turbo-0125"
     #model_engine = "mistral"
-    #model_engine = "llama3-70b-8192"
+    model_engine = "llama3-70b-8192"
     #model_engine = "mixtral-8x7b-32768"
 
     # Initialize the conversation history with system and assistant messages
