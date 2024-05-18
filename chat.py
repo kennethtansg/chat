@@ -1,10 +1,10 @@
 import logging
 import streamlit as st
+import urllib.parse
+import webbrowser
 
 from PIL import Image, ImageEnhance
-import time
 import json
-import requests
 import base64
 
 from openai import OpenAI, OpenAIError
@@ -31,28 +31,14 @@ logging.basicConfig(level=logging.INFO)
 
 # MyLearnZone Page Configuration
 st.set_page_config(
-    page_title="Agent K - AI Assistant",
+    page_title="AI Agent K",
     page_icon="imgs/agentk.png",
     layout="wide",
     initial_sidebar_state="collapsed",       # or auto or collapsed
-    menu_items={
-        "Get help": "https://github.com/AdieLaine/Streamly",
-        "Report a bug": "https://github.com/AdieLaine/Streamly",
-        "About": """
-            ## Agent K MyLearnZone Assistant
-            
-            **GitHub**: https://github.com/AdieLaine/
-            
-            The AI Assistant named, Agent K, aims to provide the latest updates from MyLearnZone,
-            generate code snippets for MyLearnZone widgets,
-            and answer questions about MyLearnZone's latest features, issues, and more.
-            Agent K has been trained on the latest MyLearnZone updates and documentation.
-        """
-    }
 )
 
 # MyLearnZone Updates and Expanders
-st.title("Agent K - AI Assistant")
+st.title("AI Agent K")
 
 #client = OpenAI()      # GPT3.5
 
@@ -65,34 +51,6 @@ client = Groq(
     api_key="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",
 )
 
-API_DOCS_URL = "https://docs.streamlit.io/library/api-reference"
-
-@st.cache_data(show_spinner=False)
-def long_running_task(duration):
-    """
-    Simulates a long-running operation.
-    """
-    time.sleep(duration)
-    return "Long-running operation completed."
-
-@st.cache_data(show_spinner=False)
-def load_and_enhance_image(image_path, enhance=False):
-    """
-    Load and optionally enhance an image.
-
-    Parameters:
-    - image_path: str, path of the image
-    - enhance: bool, whether to enhance the image or not
-
-    Returns:
-    - img: PIL.Image.Image, (enhanced) image
-    """
-    img = Image.open(image_path)
-    if enhance:
-        enhancer = ImageEnhance.Contrast(img)
-        img = enhancer.enhance(1.8)
-    return img
-
 @st.cache_data(show_spinner=False)
 def load_streamlit_updates():
     """Load the latest MyLearnZone updates from a local JSON file."""
@@ -102,50 +60,61 @@ def load_streamlit_updates():
     except (FileNotFoundError, json.JSONDecodeError):
         return {}
 
-@st.cache_data(show_spinner=False)
-def get_latest_update_from_json(keyword, latest_updates):
-    """
-    Fetch the latest MyLearnZone update based on a keyword.
-
-    Parameters:
-        keyword (str): The keyword to search for in the MyLearnZone updates.
-        latest_updates (dict): The latest MyLearnZone updates data.
-
-    Returns:
-        str: The latest update related to the keyword, or a message if no update is found.
-    """
-    for section in ["Highlights", "Notable Changes", "Other Changes"]:
-        for sub_key, sub_value in latest_updates.get(section, {}).items():
-            for key, value in sub_value.items():
-                if keyword.lower() in key.lower() or keyword.lower() in value.lower():
-                    return f"Section: {section}\nSub-Category: {sub_key}\n{key}: {value}"
-
-    return "No updates found for the specified keyword."
-
-def get_streamlit_api_code_version():
-    """
-    Get the current MyLearnZone API code version from the MyLearnZone API documentation.
-
-    Returns:
-        str: The current MyLearnZone API code version.
-    """
-    try:
-        response = requests.get(API_DOCS_URL)
-        if response.status_code == 200:
-            return "1.32.0"
-    except requests.exceptions.RequestException as e:
-        print("Error connecting to the MyLearnZone API documentation:", str(e))
-    return None
-
 def display_streamlit_updates():
     """It displays the latest updates of the MyLearnZone."""
-    with st.expander("MyLearnZone 1.32 Announcement", expanded=False):
-        image_path = "imgs/streamlit128.png"
-        enhance = st.checkbox("Enhance Image?", False)
-        img = load_and_enhance_image(image_path, enhance)
-        st.image(img, caption="MyLearnZone 1.32 Announcement", use_column_width="auto", clamp=True, channels="RGB", output_format="PNG")
-        st.markdown("For more details on this version, check out the [MyLearnZone Forum post](https://docs.streamlit.io/library/changelog#version-1320).")
+    with st.expander("AI Agents Updates and Developments", expanded=False):
+        st.markdown("AI streamlines your workflows and boost efficiency. For more details, check out [MyLearnZone](https://www.mylearnzone.com).")
+        st.markdown("""
 
+        ### Type of AI Agents
+
+        - 📜 :orange[**AI Agent K (Personal)**] - AI Agent K is developed based on the consciousness of human creator [Kenneth Tan](https://www.linkedin.com/in/kenneth-tan-8698ba240).
+        - 🏢 :blue[**AI Agent W (Workplace)**] - Designed to optimize workflows and improve productivity in workplace environments.
+        - 🏭 :green[**AI Agent E (Enterprise)**] - Tailored for enterprise solutions, enhancing operations and strategic decision-making.
+        - 🌐 **AI Agent A (AGI Agent)** - An Artificial General Intelligence Agent set to be fully operational by 2026.
+        - Take advantage of AI to enhance your business capabilities. Get in touch [MyLearnZone AI](https://www.mylearnzone.com).
+                                
+        ### Highlights
+
+        - 🔥 Introducing a new testing framework for MylearnZone AI Platform. Check out our [Platform](https://www.mylearnzone.com/ai) to learn how to build automated tests for apps.
+        - 📢 Announcing the general availability of `mylearnzone.connection`, a command to conveniently manage connections in MylearnZone apps. Check out the [docs](https://www.mylearnzone.com/ai) to learn more.
+        - ✨ MLZConnection has been upgraded to the new and improved MLZConnection — the same, great functionality plus more! Check out our [built-in connections](https://www.mylearnzone.com/ai).
+        - 🛠 `mylearnzone.dataframe` and `mylearnzone.data_editor` have a new toolbar. Users can search and download data in addition to enjoying improved UI for row additions and deletions. See our updated guide on [Dataframes](https://www.mylearnzone.com/ai).
+
+        ### Notable Changes
+
+        - 🔵 When using a spinner with cached functions, the spinner will be overlaid instead of pushing content down (#7488).
+        - 📅 `mylearnzone.data_editor` now supports datetime index editing (#7483).
+        - 🔢 Improved support for `decimal.Decimal` in `mylearnzone.dataframe` and `mylearnzone.data_editor` (#7475).
+        - 🌐 Global kwargs were added for hashlib (#7527, #7526). Thanks, DueViktor!
+        - 🖋 `mylearnzone.components.v1.iframe` now permits writing to clipboard (#7487). Thanks, dthphkkr2!
+        - 🔒 SafeSessionsState disconnect was replaced with script runner yield points for improved efficiency and clarity (#7373).
+        - 🔗 The Langchain callback handler will show the full input string inside the body of a `mylearnzone.status` when the input string is too long to show as a label (#7478). Thanks, podlkhyshev!
+        - 📊 `mylearnzone.graphviz_chart` now supports using different Graphviz layout engines (#7505 2, #4809 1).
+        - 🎨 Assorted visual tweaks (#7486 3, #7592 3).
+        - 📈 Plotly.js was upgraded to version 2.26.1 (#7449 3, #7476 1, #7045 1).
+        - 🗂 Legacy serialization for DataFrames was removed. All DataFrames will be serialized by Apache Arrow (#7429 2).
+        - 🔄 Compatibility for Pillow 10.x was added (#7442 2).
+        - 🔧 Migrated _stcore/allowed-message-origins endpoint to _stcore/host-config (#7342 1).
+        - 📩 Added post_parent_message platform command to send custom messages from a MylearnZone app to its parent window (#7522 4).
+
+        ### Other Changes
+
+        - 🧵 Improved string dtype handling for DataFrames (#7479 1).
+        - 🚫 `mylearnzone.write` will avoid using unsafe_allow_html=True if possible (#7432).
+        - 👁 Bug fix: Implementation of `mylearnzone.expander` was simplified for improved behavior and consistency (#7477, #2839, #4111, #4651, #5604).
+        - 🔄 Bug fix: Multiple links in the sidebar are now aligned with other sidebar elements (#7531 2).
+        - 🏷 Bug fix: `mylearnzone.chat_input` won't incorrectly prompt for `Label` parameter in IDEs (#7560).
+        - 🛠 Bug fix: Scroll bars correctly overlay `mylearnzone.dataframe` and `mylearnzone.data_editor` without adding empty space (#7090, #6888).
+        - 💬 Bug fix: `mylearnzone.chat_message` behaves correctly with the removal of AutoSizer (#7504, #7473).
+        - 🔗 Bug fix: Anchor links are reliably produced for non-English headers (#7454, #5291).
+        - ⛄ Bug fix: `mylearnzone.connections.SnowparkConnection` more accurately detects when it's running within MylearnZone in Snowflake (#7502).
+        - 🚨 Bug fix: A user-friendly warning is shown when exceeding the size limitations of a pandas Styler object (#7497, #5953).
+        - 🔠 Bug fix: `mylearnzone.data_editor` automatically converts non-string column names to strings (#7485, #6950).
+        - 📍 Bug fix: `mylearnzone.data_editor` correctly identifies non-range indices as a required column (#7481, #6995).
+        - 📁 Bug fix: `mylearnzone.file_uploader` displays compound file extensions like `csv.gz` correctly (#7362). Thanks, mo42 1
+        """)
+        
 def img_to_base64(image_path):
     """Convert image to base64"""
     with open(image_path, "rb") as img_file:
@@ -169,12 +138,12 @@ def on_chat_submit(chat_input, api_key, latest_updates):
     # Initialize the OpenAI API
     #model_engine = "gpt-3.5-turbo-1106"
     #model_engine = "mistral"
-    #model_engine = "llama3-70b-8192"
-    model_engine = "mixtral-8x7b-32768"
+    model_engine = "llama3-70b-8192"
+    #model_engine = "mixtral-8x7b-32768"
 
     # Initialize the conversation history with system and assistant messages
     if 'conversation_history' not in st.session_state:
-        assistant_message = "Hello! I am Agent K. How can I assist you with MyLearnZone today?"
+        assistant_message = "Hello! I am AI Agent K. How can I assist you?"
         formatted_message = []
         highlights = latest_updates.get("Highlights", {})
         
@@ -197,9 +166,14 @@ def on_chat_submit(chat_input, api_key, latest_updates):
         
         # Initialize conversation_history
         st.session_state.conversation_history = [
-            {"role": "system", "content": "You are Agent K, a specialized AI assistant trained in MyLearnZone."},
+            {"role": "system", "content": "You are AI Agent K, a friendly, helpful, specialized AI business consultant for AI solutions, MyLearnZone Company, Asia AI Association and Immersive Technologies."},
+            {"role": "system", "content": "AI Agent K is created and developed based on the consciousness of human creator Kenneth Tan https://www.linkedin.com/in/kenneth-tan-8698ba240"},
+            {"role": "system", "content": "Be concise and clear: Keep responses under 500 characters, using bullet points for key information"},            
+            {"role": "system", "content": "You must stay on topic: Your expertise lies in Artificial Intelligence, Immersive Technologies, MyLearnZone company information, and Asia AI Association only. If a question strays, kindly nudge them back with a friendly suggestion to rephrase."},
+            {"role": "system", "content": "Acknowledge limitations: If you can't answer, politely explain and offer alternatives (whatsapp to human help provided in the side menu). Use varied response to stay engaging."},            
+            {"role": "system", "content": "Be informative and friendly: Provide accurate information in a conversational, slight humorous tone"},
+            {"role": "system", "content": "Break down complex questions into smaller, answerable steps"},
             {"role": "system", "content": "Refer to conversation history to provide context to your reponse."},
-            {"role": "system", "content": "You are trained up to MyLearnZone Version 1.32.0."},
             {"role": "assistant", "content": assistant_message}
         ]
 
@@ -258,13 +232,19 @@ def main():
     # Initialize the chat with a greeting and MyLearnZone updates if the history is empty
     if not st.session_state.history:
         latest_updates = load_streamlit_updates()  # This function should be defined elsewhere to load updates
-        initial_bot_message = "Hello! How can I assist you with MyLearnZone today? Here are some of the latest highlights:\n"
+        initial_bot_message = "Hello! How can I assist you? Here are some of the latest highlights:\n"
         updates = latest_updates.get("Highlights", {})
         if isinstance(updates, dict):  # Check if updates is a dictionary
-            initial_bot_message = "Hello! I'm Agent K, your AI Assistant, here to help you 24/7 with any questions or support you might need. Whether it's assistance with our products, services, or just getting more information, I'm here to provide fast, accurate responses. How can I assist you today?"
+            initial_bot_message = "Hello! I'm Agent K, your AI Assistant, I'm here to answer inquiries specifically about AI and Immersive Technologies. How can I assist you?"
             st.session_state.history.append({"role": "assistant", "content": initial_bot_message})
             st.session_state.conversation_history = [
-                {"role": "system", "content": "You are Agent K, a specialized AI business consultant for AI solutions."},
+                {"role": "system", "content": "You are AI Agent K, a friendly, helpful, specialized AI business consultant for AI solutions, MyLearnZone Company, Asia AI Association and Immersive Technologies."},
+                {"role": "system", "content": "AI Agent K is created and developed based on the consciousness of human creator Kenneth Tan https://www.linkedin.com/in/kenneth-tan-8698ba240"},
+                {"role": "system", "content": "Be concise and clear: Keep responses under 500 characters, using bullet points for key information"},            
+                {"role": "system", "content": "You must stay on topic: Your expertise lies in Artificial Intelligence, Immersive Technologies, MyLearnZone company info, and Asia AI Association only. If a question strays, kindly nudge them back with a friendly suggestion to rephrase."},
+                {"role": "system", "content": "Acknowledge limitations: If you can't answer, politely explain and offer alternatives (whatsapp to human help provided in the side menu). Use varied response to stay engaging."},            
+                {"role": "system", "content": "Be informative and friendly: Provide accurate information in a conversational, slight humorous tone"},
+                {"role": "system", "content": "Break down complex questions into smaller, answerable steps"},
                 {"role": "system", "content": "Refer to conversation history to provide context to your reponse."},
                 #{"role": "system", "content": "Use the streamlit_updates.json local file to look up the latest company product feature updates."},
                 {"role": "system", "content": "When responding, provide business use cases examples, links to documentation, to help the user."},
@@ -289,7 +269,7 @@ def main():
         .cover-glow {
             width: 100%;
             height: auto;
-            padding: 3px;
+            padding: 2px;
             box-shadow: 
                 0 0 5px #330000,
                 0 0 10px #660000,
@@ -300,8 +280,15 @@ def main():
                 0 0 35px #FF6666;
             position: relative;
             z-index: -1;
-            border-radius: 30px;  /* Rounded corners */
+            border-radius: 20px;  /* Rounded corners */
         }
+        .cover-glow1 {
+            width: 100%;
+            height: auto;
+            padding: 0px;
+            position: relative;
+            z-index: -1;
+        }        
         </style>
         """,
         unsafe_allow_html=True,
@@ -313,27 +300,38 @@ def main():
             return base64.b64encode(img_file.read()).decode()
 
     # Load and display sidebar image with glowing effect
-    img_path = "imgs/agentk.png"
+    img_path = "imgs/agentk2.png"
     img_base64 = img_to_base64(img_path)
     st.sidebar.markdown(
-        f'<img src="data:image/png;base64,{img_base64}" class="cover-glow">',
+        f'<img src="data:image/png;base64,{img_base64}" class="cover-glow1">',
         unsafe_allow_html=True,
     )
-    st.sidebar.markdown("---")
-    
+
     # Sidebar for Mode Selection
-    mode = st.sidebar.radio("Select Mode:", options=["Latest Updates", "Chat with Agent K"], index=1)
     st.sidebar.markdown("---")
+    mode = st.sidebar.radio("", options=["About AI Agents", "Chat with Agent K"], index=1)
+
+    st.sidebar.markdown("---")
+    # URL encoding the default message
+    default_message = "Hi, I would like to enquire about AI"
+    encoded_message = urllib.parse.quote(default_message)
+
+    # Constructing the full phone number and the WhatsApp URL
+    #full_phone_number = f"{country_code}{phone_number}"
+    whatsapp_url = f"https://wa.me/+6583385564?text={encoded_message}"
+
+    if st.sidebar.button("🟢 WhatsApp to Human Agent K"):
+        webbrowser.open(whatsapp_url)
+
     # Toggle checkbox in the sidebar for basic interactions
     show_basic_info = st.sidebar.toggle("Instructions", value=False)
 
     # Display the st.info box if the checkbox is checked
     if show_basic_info:
         st.sidebar.markdown("""
-        ### Basic Interactions
-        - **Ask About MyLearnZone**: Type your questions about MyLearnZone's latest updates, features, or issues.
-        - **Search for Code**: Use keywords like 'code example', 'syntax', or 'how-to' to get relevant code snippets.
-        - **Navigate Updates**: Switch to 'Updates' mode to browse the latest MyLearnZone updates in detail.
+        - **Query about Asia AI Association**: Request details or updates on the Asia AI Association's activities, events, or membership information.
+        - **Ask About AI**: Inquire about AI technologies, developments, or general information regarding artificial intelligence and its applications.
+        - **Navigate Updates**: Switch to 'About AI Agents' mode to browse the latest AI Agents updates in detail.
         """)
 
     st.sidebar.markdown("---")
@@ -343,7 +341,7 @@ def main():
 
     # Display image with custom CSS class for glowing effect
     st.sidebar.markdown(
-        f'<img src="data:image/png;base64,{img_base64}" class="cover-glow">',
+        f'<a href="https://www.mylearnzone.com/" target="_blank"><img src="data:image/png;base64,{img_base64}" alt="MyLearnZone" class="cover-glow"></a>',
         unsafe_allow_html=True,
     )
 
@@ -357,7 +355,7 @@ def main():
     
     # Handle Chat and Update Modes
     if mode == "Chat with Agent K":
-        chat_input = st.chat_input("Ask me about MyLearnZone updates:")
+        chat_input = st.chat_input("E.g. How AI can help me to reduce operational costs?")
         if chat_input:
             latest_updates = load_streamlit_updates()
             on_chat_submit(chat_input, api_key, latest_updates)
