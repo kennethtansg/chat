@@ -48,7 +48,7 @@ st.title("AI Agent K")
 #)
 
 client = Groq(
-    api_key="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",
+    api_key = st.secrets["GROQ_API_KEY"]
 )
 
 @st.cache_data(show_spinner=False)
